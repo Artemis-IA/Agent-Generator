@@ -221,15 +221,23 @@ wiki_tool = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
         role = repr(agent["role"])
         goal = repr(agent["goal"])
         backstory = repr(agent["backstory"])
-        code += f"agent_{agent['name']} = Agent(\n    role={role},\n    goal={goal},\n    backstory={backstory},\n    verbose={agent['verbose']},\n    allow_delegation={agent['allow_delegation']},\n    tools=[search_tool, wiki_tool]\n)\n\n"
+        code += "agent_{} = Agent(\n    role={},\n    goal={},\n    backstory={},\n    verbose={},\n    allow_delegation={},\n    tools=[search_tool, wiki_tool]\n)\n\n".format(
+            agent['name'], role, goal, backstory, agent['verbose'], agent['allow_delegation']
+        )
     
     for task in config["tasks"]:
         task_name = re.sub(r'\s+', '_', task["name"])
         description = repr(task["description"])
         expected_output = repr(task["expected_output"])
-        code += f"task_{task_name} = Task(\n    description={description},\n    agent=agent_{task['agent']},\n    expected_output={expected_output}\n)\n\n"
+        # Check if 'agent' key exists, default to first agent if missing
+        agent_name = task.get("agent", config["agents"][0]["name"] if config["agents"] else "default_assistant")
+        code += "task_{} = Task(\n    description={},\n    agent=agent_{},\n    expected_output={}\n)\n\n".format(
+            task_name, description, agent_name, expected_output
+        )
     
-    code += "crew = Crew(\n    agents=[" + ", ".join(f"agent_{a['name']}" for a in config["agents"]) + "],\n    tasks=[" + ", ".join(f"task_{re.sub(r'\s+', '_', t['name'])}" for t in config["tasks"]) + "]\n)\nresult = crew.kickoff()\n\nprint(result)"
+    agents_list = ", ".join("agent_{}".format(a['name']) for a in config["agents"])
+    tasks_list = ", ".join("task_{}".format(re.sub(r'\s+', '_', t['name'])) for t in config["tasks"])
+    code += "crew = Crew(\n    agents=[{}],\n    tasks=[{}]\n)\nresult = crew.kickoff()\n\nprint(result)".format(agents_list, tasks_list)
     return code
 
 def create_langgraph_code(config: Dict[str, Any]) -> str:
@@ -398,11 +406,15 @@ def main_app():
             with st.spinner(f"Génération du code {framework.upper()}..."):
                 generator = AgentGenerator()
                 config = generator.analyze_prompt(user_prompt, framework)
-                st.session_state.config = config
-                st.session_state.code = create_code_block(config, framework)
-                st.session_state.framework = framework
-                time.sleep(0.5)
-                st.success(f"✨ Code {framework.upper()} généré avec succès !")
+                try:
+                    code = create_code_block(config, framework)
+                    st.session_state.config = config
+                    st.session_state.code = code
+                    st.session_state.framework = framework
+                    time.sleep(0.5)
+                    st.success(f"✨ Code {framework.upper()} généré avec succès !")
+                except Exception as e:
+                    st.error(f"Erreur lors de la génération du code : {e}")
 
     with col2:
         st.subheader("💡 Conseils sur le Framework")
@@ -413,12 +425,13 @@ def main_app():
         else:
             st.info("Concentrez-vous sur les étapes de raisonnement et l'intégration des outils.")
 
-    if 'config' in st.session_state:
+    # Only display generated content if all required keys are present
+    if all(key in st.session_state for key in ['config', 'code', 'framework']):
         st.subheader("🔍 Configuration Générée")
         tab1, tab2, tab3 = st.tabs(["📊 Graphe Visuel", "🔧 Détails Config", "💻 Code"])
 
         with tab1:
-            if framework in ["crewai", "langgraph"]:
+            if st.session_state.framework in ["crewai", "langgraph"]:
                 st.write("**Graphe de la Structure des Agents**")
                 display_graph(st.session_state.config, st.session_state.framework)
             else:
@@ -435,11 +448,11 @@ def main_app():
             st.download_button(
                 label="📥 Télécharger le Code",
                 data=buf.getvalue(),
-                file_name=f"{framework}_agent.py",
+                file_name=f"{st.session_state.framework}_agent.py",
                 mime="text/python"
             )
             st.info("Téléchargez le code et exécutez-le localement pour tester votre agent.")
-
+            
 def main():
     if 'logged_in' not in st.session_state:
         st.session_state.logged_in = False
