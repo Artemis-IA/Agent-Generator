@@ -1,0 +1,23 @@
+{
+    "Assistant de Recherche": "J'ai besoin d'un assistant de recherche pour résumer des articles académiques et répondre aux questions.",
+    "Créateur de Contenu": "Je veux une équipe pour générer des posts viraux sur les réseaux sociaux et gérer la présence de la marque.",
+    "Analyste de Données": "J'ai besoin d'une équipe pour analyser les données clients et créer des visualisations.",
+    "Rédacteur Technique": "J'ai besoin d'une équipe pour rédiger des documentations techniques et des guides API.",
+    "Support Client": "Créez une équipe de support pour gérer les requêtes clients et escalader les problèmes.",
+    "Relecteur de Code": "J'ai besoin d'un agent pour relire le code et suggérer des améliorations.",
+    "Chercheur de Marché": "Construisez une équipe pour analyser les tendances du marché et les stratégies des concurrents.",
+    "Assistant Personnel": "Je veux un assistant pour planifier des réunions et gérer ma boîte mail.",
+    "Optimiseur SEO": "Créez une équipe pour optimiser le contenu web pour les moteurs de recherche.",
+    "Analyste Financier": "J'ai besoin d'un agent pour analyser les données boursières et prédire les tendances.",
+    "Assistant Juridique": "Construisez une équipe pour résumer des documents juridiques et répondre aux questions juridiques de base.",
+    "Traducteur": "J'ai besoin d'un agent pour traduire des documents entre l'anglais et l'espagnol.",
+    "Gestionnaire E-commerce": "Créez une équipe pour gérer les listes de produits et les avis clients.",
+    "Recruteur RH": "Je veux une équipe pour filtrer les CVs et planifier des entretiens.",
+    "Agrégateur de Nouvelles": "Construisez un agent pour collecter et résumer les nouvelles quotidiennes de plusieurs sources.",
+    "Planificateur de Voyage": "J'ai besoin d'un assistant pour planifier des voyages et réserver des vols.",
+    "Générateur de Recettes": "Créez un agent pour suggérer des recettes basées sur les ingrédients disponibles.",
+    "Coach Fitness": "Je veux une équipe pour créer des plans d'entraînement et suivre les progrès.",
+    "Tuteur Éducatif": "Construisez une équipe pour aider avec les devoirs de maths et expliquer les concepts.",
+    "Planificateur d'Événements": "J'ai besoin d'un agent pour organiser des événements et gérer les RSVP.",
+    "Traqueur de Bugs": "Créez une équipe pour identifier et prioriser les bugs logiciels."
+}
